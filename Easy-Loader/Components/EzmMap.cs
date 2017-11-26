@@ -12,8 +12,10 @@ using System.Threading.Tasks;
 
 namespace EzmLoader
 {
-    public class EzmMap
+    public class EzmMap : IDisposable
     {
+        protected ContentManager Content { get; private set; }
+
         public Dictionary<int, EzmTileSet> TileSets { get; private set; }
 
         public Dictionary<int, EzmTile> Tiles { get; private set; }
@@ -35,13 +37,15 @@ namespace EzmLoader
         public string Orientation { get;  private set; }             
         
         [JsonConstructor]
-        private EzmMap(
+        private EzmMap
+        (
             ICollection<EzmTileSet> TileSets, 
             ICollection<EzmTile> Tiles, 
             ICollection<EzmLayer> Layers,
             int width, int height,
             int tilewidth, int tileheight,
-            string orientation)
+            string orientation
+        )
         {
             Orientation = orientation;
             Width = width;
@@ -58,7 +62,23 @@ namespace EzmLoader
 
         }
 
-        public void Draw(SpriteBatch spriteBatch, int leftMargin = 0, int topMargin = 0)
+        protected EzmMap(ContentManager content, string pathToEzmFile, string pathToTilesetsFolders)
+        {
+            var map = EzmLoader.LoadMap(pathToEzmFile, pathToTilesetsFolders, content);
+            this.Content = content;
+            this.Height = map.Height;
+            this.HeightInPixels = map.HeightInPixels;
+            this.Layers = map.Layers;
+            this.Orientation = map.Orientation;
+            this.TileHeight = map.TileHeight;
+            this.Tiles = map.Tiles;
+            this.TileSets = map.TileSets;
+            this.TileWidth = map.TileWidth;
+            this.Width = map.Width;
+            this.WidthInPixels = map.WidthInPixels;
+        }
+
+        public virtual void Draw(SpriteBatch spriteBatch, int leftMargin = 0, int topMargin = 0)
         {
             if (Orientation == "orthogonal")
                 DrawOrthogonal(spriteBatch, leftMargin, topMargin);
@@ -103,6 +123,11 @@ namespace EzmLoader
             {
                 TileSets[tSet.ID].Texture.Dispose();
             }
+        }
+
+        public void Dispose()
+        {
+            Unload();
         }
     }
 }

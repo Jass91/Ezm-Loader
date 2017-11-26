@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using Microsoft.Xna.Framework;
+using Newtonsoft.Json;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -29,6 +30,9 @@ namespace EzmLoader.Components
 
         [JsonProperty("properties")]
         public ICollection<EzmCustomProperty> Properties { get; set; }
+
+        [JsonIgnore]
+        public Color Color { get; set; } = Color.White;
                 
     }
 }

@@ -39,7 +39,7 @@ namespace SimpleExample
             spriteBatch = new SpriteBatch(GraphicsDevice);
 
             // TODO: Add your initialization logic here
-            map = new Map(Content, $@"{Content.RootDirectory}\Levels\map.ezm");
+            map = new Map(Content, $@"{Content.RootDirectory}\Levels\map.ezm", "TileSets");
             player = new Player(0);
 
             setResolution();
