@@ -1,4 +1,5 @@
 ﻿using EzmLoader.Components;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Newtonsoft.Json;
@@ -34,7 +35,7 @@ namespace EzmLoader
                 map.TileSets[tSet.ID].Texture = texture;
             }
 
-            // set row and column of each tile
+            // set row, column and color of each tile
             foreach (var t in map.Tiles.Values)
             {
                 var tileSet = map.TileSets[t.Tileset];
@@ -43,6 +44,7 @@ namespace EzmLoader
                  
                 t.TileCol = t.TileOrder % (tileSet.Width / t.Width);
                 t.TileRow = t.TileOrder / (tileSet.Width / t.Width);
+                t.Color = Color.White;
             }
 
             return map; 
