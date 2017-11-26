@@ -2,6 +2,7 @@
 using Newtonsoft.Json;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace EzmLoader.Components
 {
@@ -28,11 +29,17 @@ namespace EzmLoader.Components
         [JsonIgnore]
         public int TileCol { get; set; }
 
-        [JsonProperty("properties")]
-        public ICollection<EzmCustomProperty> Properties { get; set; }
+        [JsonIgnore]
+        public Dictionary<string, EzmCustomProperty> Properties { get; set; }
 
         [JsonIgnore]
         public Color Color { get; set; } = Color.White;
+
+        [JsonConstructor]
+        private EzmTile(ICollection<EzmCustomProperty> Properties)
+        {
+            this.Properties = Properties.ToDictionary(p => p.Name , p  => p);
+        }
                 
     }
 }

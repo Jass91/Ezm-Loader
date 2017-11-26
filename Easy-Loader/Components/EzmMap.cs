@@ -20,7 +20,7 @@ namespace EzmLoader
 
         public Dictionary<int, EzmTile> Tiles { get; private set; }
 
-        public Dictionary<int, EzmLayer> Layers { get; private set; }
+        public Dictionary<string, EzmLayer> Layers { get; private set; }
 
         public int WidthInPixels { get; private set; }
 
@@ -56,9 +56,9 @@ namespace EzmLoader
             WidthInPixels = width * tilewidth;
             HeightInPixels = height * tileheight;
 
-            this.TileSets = TileSets.ToDictionary(tset => tset.ID, tset => tset, null);
+            this.TileSets = TileSets.ToDictionary(tset => tset.ID, tset => tset);
             this.Tiles = Tiles.ToDictionary(t => t.ID, t => t);
-            this.Layers = Layers.ToDictionary(l => l.ID, l => l);
+            this.Layers = Layers.OrderByDescending(l => l.Depth).ToDictionary(l => l.Name, l => l);
 
         }
 
@@ -89,7 +89,7 @@ namespace EzmLoader
         private void DrawOrthogonal(SpriteBatch spriteBatch, int leftMargin = 0, int topMargin = 0)
         {
             spriteBatch.Begin();
-            foreach (var l in Layers.Values.OrderBy(l => l.ID))
+            foreach (var l in Layers.Values.OrderBy(l => l.Depth))
             {
                 for (int i = 0; i < l.Data.Length; i++)
                 {
@@ -108,7 +108,7 @@ namespace EzmLoader
                     var screenLocation = new Rectangle((col * tile.Width) + leftMargin, (row * tile.Height) + topMargin, tile.Width, tile.Height);
                     var tileArea = new Rectangle(tile.TileCol * tile.Width, tile.TileRow * tile.Height, tile.Width, tile.Height);
 
-                    spriteBatch.Draw(tilesetTexture, screenLocation, tileArea, Color.White, 0, Vector2.Zero, SpriteEffects.None, 0);
+                    spriteBatch.Draw(tilesetTexture, screenLocation, tileArea, tile.Color, 0, Vector2.Zero, SpriteEffects.None, 0);
                 }
             }
 
@@ -122,10 +122,22 @@ namespace EzmLoader
 
         public EzmTile GetTileAt(Vector2 position)
         {
-            var screenCol = WidthInPixels % position.X;
-            var screenRow = HeightInPixels / position.Y;
+            var col = (int)(position.X / TileWidth);
+            var row = (int)(position.Y / TileHeight);
+            EzmTile tile = null;
+            foreach(var layer in Layers.Values)
+            {
+                var dIndex = (row + col * layer.Width);
+                var tID = layer.Data[dIndex];
+                if (tID >= 0)
+                {
+                    tile = Tiles[tID];
+                    break;
+                }
+            }
+           
 
-            return new EzmTile();
+            return tile;
         }
 
         public void Unload()

@@ -13,6 +13,6 @@ namespace EzmLoader.Components
         public string Name { get; set; }
 
         [JsonProperty("value")]
-        public object Value { get; set; }
+        public string Value { get; set; }
     }
 }

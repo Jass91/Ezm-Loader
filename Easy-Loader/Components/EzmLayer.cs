@@ -9,8 +9,8 @@ namespace EzmLoader.Components
 {
     public class EzmLayer
     {
-        [JsonProperty("id")]
-        public int ID { get; set; }
+        [JsonProperty("depth")]
+        public int Depth { get; set; }
 
         [JsonProperty("name")]
         public string Name { get; set; }

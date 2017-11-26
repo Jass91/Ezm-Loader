@@ -8,6 +8,7 @@ using Microsoft.Xna.Framework.Content;
 using System.Collections.ObjectModel;
 using Shared.Enums;
 using Shared.Utils;
+using Microsoft.Xna.Framework.Input;
 
 namespace SimpleExample.Core.Player
 {
@@ -21,13 +22,9 @@ namespace SimpleExample.Core.Player
 
         private int _currentFrame;
 
-        private float _scale = 1;
-
         private int _index;
 
         private bool _isMoving = false;
-
-        private bool _grow = false;
 
         private Direction _dir = Direction.RIGHT;
 
@@ -37,7 +34,7 @@ namespace SimpleExample.Core.Player
             _currentFrame = 2;
             _isMoving = false;
 
-            Position = new Vector2(10, 10);
+            Position = new Vector2(0, 0);
         }
         public void Draw(SpriteBatch spriteBatch)
         {
@@ -47,9 +44,7 @@ namespace SimpleExample.Core.Player
             spriteBatch.Draw(texture, Position, Color.White);            
             spriteBatch.End();
             _isMoving = false;
-            _grow = false;
         }
-
 
         public void Animate()
         {
@@ -57,9 +52,6 @@ namespace SimpleExample.Core.Player
                 _currentFrame = _currentFrame >= 0 && _currentFrame < 3 ? _currentFrame + 1 : 1;            
             else
                 _currentFrame = 2;
-
-            if (_grow)
-                _scale += 1;
         }
 
         public void LoadTexture(Texture2D spritesheet)
@@ -83,7 +75,7 @@ namespace SimpleExample.Core.Player
             Textures = textures;
         }
 
-        public void UpdateDirection(Direction dir)
+        private void UpdateDirection(Direction dir)
         {
             _dir = dir;
             _isMoving = true;
@@ -97,9 +89,24 @@ namespace SimpleExample.Core.Player
                 Position = new Vector2(Position.X, Position.Y + _velocity);     
         }
 
-        public void Grow()
+        public void Move()
         {
-            _grow = true;
+            if (Keyboard.GetState(PlayerIndex.One).IsKeyDown(Keys.W))
+            {
+                UpdateDirection(Direction.UP);
+            }
+            else if (Keyboard.GetState(PlayerIndex.One).IsKeyDown(Keys.A))
+            {
+                UpdateDirection(Direction.LEFT);
+            }
+            else if (Keyboard.GetState(PlayerIndex.One).IsKeyDown(Keys.S))
+            {
+                UpdateDirection(Direction.DOWN);
+            }
+            else if (Keyboard.GetState(PlayerIndex.One).IsKeyDown(Keys.D))
+            {
+                UpdateDirection(Direction.RIGHT);
+            }
         }
     }
 }

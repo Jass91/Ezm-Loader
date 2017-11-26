@@ -86,9 +86,17 @@ namespace SimpleExample
             if (Keyboard.GetState(PlayerIndex.One).IsKeyDown(Keys.Escape))
                 this.Exit();
 
-            handleDirection();
-
             var t = map.GetTileAt(player.Position);
+            var property = t.Properties.Count > 0 ? t.Properties["collidable"].Value : null;
+            if (property != null)
+            {
+                t.Color = bool.Parse(property) ? Color.Red : Color.White;
+            }else
+            {
+                map.Tiles[38].Color = Color.White;
+            }
+
+            player.Move();
 
             increase += gameTime.ElapsedGameTime.Milliseconds;
             if (increase >= 1000 / fps)
@@ -114,30 +122,6 @@ namespace SimpleExample
             player.Draw(spriteBatch);
 
             base.Draw(gameTime);
-        }
-
-        private void handleDirection()
-        {
-            if (Keyboard.GetState(PlayerIndex.One).IsKeyDown(Keys.W))
-            {
-                player.UpdateDirection(Direction.UP);
-            }
-            else if (Keyboard.GetState(PlayerIndex.One).IsKeyDown(Keys.A))
-            {
-                player.UpdateDirection(Direction.LEFT);
-            }
-            else if (Keyboard.GetState(PlayerIndex.One).IsKeyDown(Keys.S))
-            {
-                player.UpdateDirection(Direction.DOWN);
-            }
-            else if (Keyboard.GetState(PlayerIndex.One).IsKeyDown(Keys.D))
-            {
-                player.UpdateDirection(Direction.RIGHT);
-            }
-            else if (Keyboard.GetState(PlayerIndex.One).IsKeyDown(Keys.Space))
-            {
-                player.Grow();
-            }
         }
     }
 }
