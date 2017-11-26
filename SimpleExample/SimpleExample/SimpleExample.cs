@@ -88,6 +88,8 @@ namespace SimpleExample
 
             handleDirection();
 
+            var t = map.GetTileAt(player.Position);
+
             increase += gameTime.ElapsedGameTime.Milliseconds;
             if (increase >= 1000 / fps)
             {

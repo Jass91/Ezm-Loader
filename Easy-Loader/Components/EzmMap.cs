@@ -93,6 +93,10 @@ namespace EzmLoader
             {
                 for (int i = 0; i < l.Data.Length; i++)
                 {
+                    // empty tiles
+                    if (l.Data[i] < 0)
+                        continue;
+
                     var tile = Tiles[l.Data[i]];
                     if (tile == null)
                         continue;
@@ -114,6 +118,14 @@ namespace EzmLoader
         private void DrawIsometric(SpriteBatch spriteBatch, int leftMargin = 0, int topMargin = 0)
         {
 
+        }
+
+        public EzmTile GetTileAt(Vector2 position)
+        {
+            var screenCol = WidthInPixels % position.X;
+            var screenRow = HeightInPixels / position.Y;
+
+            return new EzmTile();
         }
 
         public void Unload()
