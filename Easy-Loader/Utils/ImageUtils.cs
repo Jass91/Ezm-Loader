@@ -1,7 +1,8 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
-namespace Shared.Utils
+
+namespace EzmLoader.Shared.Utils
 {
     public class ImageUtils
     {

@@ -78,7 +78,6 @@
     <Compile Include="Program.cs" />
     <Compile Include="SimpleExample.cs" />
     <Compile Include="Shared\Enums\Direction.cs" />
-    <Compile Include="Shared\Utils\ImageUtils.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Game.ico" />

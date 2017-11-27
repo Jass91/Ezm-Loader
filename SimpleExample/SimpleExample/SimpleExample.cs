@@ -86,14 +86,11 @@ namespace SimpleExample
             if (Keyboard.GetState(PlayerIndex.One).IsKeyDown(Keys.Escape))
                 this.Exit();
 
-            var t = map.GetTileAt(player.Position);
-            var property = t!= null && t.Properties.Count > 0 ? t.Properties["collidable"].Value : null;
-            if (property != null)
+            var nexPosition = player.GetNextPostion();
+            if (!PlayerWillCollide(nexPosition))
             {
-                t.Color = bool.Parse(property) ? Color.Red : Color.White;
+                player.MoveTo(nexPosition);
             }
-
-            player.Move();
 
             increase += gameTime.ElapsedGameTime.Milliseconds;
             if (increase >= 1000 / fps)
@@ -119,6 +116,20 @@ namespace SimpleExample
             player.Draw(spriteBatch);
 
             base.Draw(gameTime);
+        }
+
+        protected bool PlayerWillCollide(Vector2 futurePosition)
+        {
+            var t = map.GetTileAt(futurePosition);
+            if (t == null)
+                return false;
+
+            var tilePos = new Rectangle(t.Column * t.Width, t.Row * t.Height, t.Width, t.Height);
+            var rect = new Rectangle((int)futurePosition.X, (int)futurePosition.Y, t.Width, t.Height);
+            var collided = tilePos.Intersects(rect);
+            var collidable = t.Properties.ContainsKey("collidable") ? bool.Parse(t.Properties["collidable"].Value) : false;
+
+            return collidable && collidable;
         }
     }
 }

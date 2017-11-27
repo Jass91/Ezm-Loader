@@ -158,10 +158,10 @@ namespace EzmLoader
         public void Unload()
         {
             // Unload tileset textures
-            //foreach (var tSet in TileSets.Values)
-            //{
-            //    TileSets[tSet.ID].Texture.Dispose();
-            //}
+            foreach (var tSet in TileSets.Values)
+            {
+                TileSets[tSet.ID].Texture.Dispose();
+            }
         }
 
         public void Dispose()

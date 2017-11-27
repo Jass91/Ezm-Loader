@@ -1,14 +1,9 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Microsoft.Xna.Framework.Content;
-using System.Collections.ObjectModel;
 using Shared.Enums;
-using Shared.Utils;
 using Microsoft.Xna.Framework.Input;
+using EzmLoader.Shared.Utils;
 
 namespace SimpleExample.Core.Player
 {
@@ -34,7 +29,7 @@ namespace SimpleExample.Core.Player
             _currentFrame = 2;
             _isMoving = false;
 
-            Position = new Vector2(0, 0);
+            Position = new Vector2(32, 32);
         }
         public void Draw(SpriteBatch spriteBatch)
         {
@@ -43,13 +38,15 @@ namespace SimpleExample.Core.Player
             spriteBatch.Begin();
             spriteBatch.Draw(texture, Position, Color.White);            
             spriteBatch.End();
-            _isMoving = false;
         }
 
         public void Animate()
         {
             if (_isMoving)
-                _currentFrame = _currentFrame >= 0 && _currentFrame < 3 ? _currentFrame + 1 : 1;            
+            {
+                _currentFrame = _currentFrame >= 0 && _currentFrame < 3 ? _currentFrame + 1 : 1;
+                _isMoving = false;
+            }
             else
                 _currentFrame = 2;
         }
@@ -75,38 +72,38 @@ namespace SimpleExample.Core.Player
             Textures = textures;
         }
 
-        private void UpdateDirection(Direction dir)
+        public void MoveTo(Vector2 nextPosition)
         {
-            _dir = dir;
+            Position = nextPosition;
             _isMoving = true;
-            if (dir == Direction.LEFT)
-                Position = new Vector2(Position.X - _velocity, Position.Y);
-            else if (dir == Direction.RIGHT)
-                Position = new Vector2(Position.X + _velocity, Position.Y);
-            else if (dir == Direction.UP)
-                Position = new Vector2(Position.X, Position.Y - _velocity);
-            else
-                Position = new Vector2(Position.X, Position.Y + _velocity);     
         }
 
-        public void Move()
+        public Vector2 GetNextPostion()
         {
+            Vector2 nextPos = Position;
+          
             if (Keyboard.GetState(PlayerIndex.One).IsKeyDown(Keys.W))
             {
-                UpdateDirection(Direction.UP);
+                _dir = Direction.UP;
+                nextPos = new Vector2(Position.X, Position.Y - _velocity);
             }
             else if (Keyboard.GetState(PlayerIndex.One).IsKeyDown(Keys.A))
             {
-                UpdateDirection(Direction.LEFT);
+                _dir = Direction.LEFT;
+                nextPos = new Vector2(Position.X - _velocity, Position.Y);
             }
             else if (Keyboard.GetState(PlayerIndex.One).IsKeyDown(Keys.S))
             {
-                UpdateDirection(Direction.DOWN);
+                _dir = Direction.DOWN;
+                nextPos = new Vector2(Position.X, Position.Y + _velocity);
             }
             else if (Keyboard.GetState(PlayerIndex.One).IsKeyDown(Keys.D))
             {
-                UpdateDirection(Direction.RIGHT);
+                _dir = Direction.RIGHT;
+                nextPos = new Vector2(Position.X + _velocity, Position.Y);
             }
+
+            return nextPos;
         }
     }
 }
