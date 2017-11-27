@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using Newtonsoft.Json;
 using System.Collections;
 using System.Collections.Generic;
@@ -23,11 +24,13 @@ namespace EzmLoader.Components
         [JsonProperty("tileset")]
         public int Tileset { get; set; }
 
+        // talvez remover -------------
         [JsonIgnore]
         public int TileRow { get; set; }
 
         [JsonIgnore]
         public int TileCol { get; set; }
+        // ------------------------------
 
         [JsonIgnore]
         public Dictionary<string, EzmCustomProperty> Properties { get; set; }
@@ -35,11 +38,24 @@ namespace EzmLoader.Components
         [JsonIgnore]
         public Color Color { get; set; } = Color.White;
 
+        [JsonIgnore]
+        public Texture2D Texture { get; set; }
+
+        [JsonIgnore]
+        public int Column { get; set; }
+
+        [JsonIgnore]
+        public int Row { get; set; }
+
         [JsonConstructor]
         private EzmTile(ICollection<EzmCustomProperty> Properties)
         {
             this.Properties = Properties.ToDictionary(p => p.Name , p  => p);
         }
-                
+        
+        public EzmTile()
+        {
+
+        }      
     }
 }

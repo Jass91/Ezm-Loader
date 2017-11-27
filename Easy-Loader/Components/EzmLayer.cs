@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using Microsoft.Xna.Framework;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,8 +22,33 @@ namespace EzmLoader.Components
         [JsonProperty("height")]
         public int Height { get; set; }
 
-        [JsonProperty("data")]
+        [JsonIgnore]
+        public EzmTile [,]Data2 { get; set; }
+
         public int[] Data { get; set; }
 
+
+        [JsonConstructor]
+        public EzmLayer(int width, int height, int []data)
+        {
+            this.Width = width;
+            this.Height = height;
+            this.Data = data; // remover depois
+            Data2 = new EzmTile[width, height];
+            for(int i = 0; i < Width; i++)
+            {
+                for (int j = 0; j < Height; j++)
+                {
+                    var tID = data[(i + j * width)];
+                    Data2[i,j] = new EzmTile()
+                    {
+                        ID = tID,
+                        Color = Color.White,
+                        Row = i,
+                        Column = j
+                    };
+                }
+            }            
+        }
     }
 }
