@@ -13,7 +13,7 @@ namespace EzmLoader.Components
         public int ID { get; set; }
 
         [JsonProperty("tileorder")]
-        public int TileOrder { get; set; }
+        public int? TileOrder { get; set; }
 
         [JsonProperty("width")]
         public int Width { get; set; }
@@ -22,7 +22,7 @@ namespace EzmLoader.Components
         public int Height { get; set; }
 
         [JsonProperty("tileset")]
-        public int Tileset { get; set; }
+        public int? Tileset { get; set; }
 
         // talvez remover -------------
         [JsonIgnore]
@@ -39,18 +39,18 @@ namespace EzmLoader.Components
         public Color Color { get; set; } = Color.White;
 
         [JsonIgnore]
-        public Texture2D Texture { get; set; }
-
-        [JsonIgnore]
         public int Column { get; set; }
 
         [JsonIgnore]
         public int Row { get; set; }
 
+        [JsonIgnore]
+        public Rectangle TileArea { get; set; }
+
         [JsonConstructor]
-        private EzmTile(ICollection<EzmCustomProperty> Properties)
+        private EzmTile(ICollection<EzmCustomProperty> properties)
         {
-            this.Properties = Properties.ToDictionary(p => p.Name , p  => p);
+            this.Properties = properties.ToDictionary(p => p.Name , p  => p);
         }
         
         public EzmTile()

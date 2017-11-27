@@ -10,7 +10,7 @@ namespace SimpleExample
     /// <summary>
     /// This is the main type for your game
     /// </summary>
-    public class SimpleExample : Microsoft.Xna.Framework.Game
+    public class SimpleExample : Game
     {
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
@@ -87,13 +87,10 @@ namespace SimpleExample
                 this.Exit();
 
             var t = map.GetTileAt(player.Position);
-            var property = t.Properties.Count > 0 ? t.Properties["collidable"].Value : null;
+            var property = t!= null && t.Properties.Count > 0 ? t.Properties["collidable"].Value : null;
             if (property != null)
             {
                 t.Color = bool.Parse(property) ? Color.Red : Color.White;
-            }else
-            {
-                map.Tiles[38].Color = Color.White;
             }
 
             player.Move();

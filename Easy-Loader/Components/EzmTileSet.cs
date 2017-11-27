@@ -29,19 +29,21 @@ namespace EzmLoader.Components
         [JsonProperty("source")]
         public string Source { get; set; }
 
-        [JsonProperty("content")]
-        private string Content { get; set; }
-
         [JsonProperty("width")]
         public int Width { get; set; }
 
         [JsonProperty("height")]
         public int Height { get; set; }
 
-        [JsonProperty("encoded")]
-        public bool Encoded { get; set; }
-
         [JsonIgnore]
-        public Texture2D Texture { get; set; }
+        public Texture2D Texture { get; internal set; }
+
+        [JsonConstructor]
+        private EzmTileSet(int rows, int columns)
+        {
+            this.Rows = rows;
+            this.Columns = columns;
+            this.TileCount = rows * columns;
+        }
     }
 }

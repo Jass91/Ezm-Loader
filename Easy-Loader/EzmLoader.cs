@@ -26,54 +26,39 @@ namespace EzmLoader
                 map = JsonConvert.DeserializeObject<EzmMap>(json);
             }
 
-            // load tileset textures
+            // set addition info to tilesets
             var tileSetsTextures = new Dictionary<int, Texture2D>();
             foreach (var tSet in map.TileSets.Values)
             {
                 var tileSetAssetID =  tSet.Source.Substring(tSet.Source.IndexOf(pathTotileSetFolder));
                 tileSetAssetID = tileSetAssetID.Substring(0, tileSetAssetID.LastIndexOf("."));
 
-                var texture = content.Load<Texture2D>(tileSetAssetID);
-
-                // apagar depois
-                map.TileSets[tSet.ID].Texture = texture;
-
-                tileSetsTextures.Add(tSet.ID, texture);
+                // store tileset image
+                map.TileSets[tSet.ID].Texture = content.Load<Texture2D>(tileSetAssetID);  
             }
 
-            // set row, column and color of each tile
+            // set addition info to tiles
             foreach (var layer in map.Layers.Values)
             {
-                foreach (var t in layer.Data2)
+                foreach (var t in layer.Data)
                 {
                     if (t.ID < 0)
                         continue;
-
-                    var tileSetTexture = tileSetsTextures[t.Tileset];
+                     
+                    var tileSetTexture = map.TileSets[t.Tileset.Value].Texture;
                     if (tileSetTexture == null)
-                        continue;
+                    {
+                        throw new Exception($"Tile {t.ID} uses an invalid tileset {t.Tileset.Value}");
+                    }
 
-                    var tileCol = t.TileOrder % (tileSetTexture.Width / t.Width);
-                    var tileRow = t.TileOrder / (tileSetTexture.Width / t.Width);
+                    var tileCol = t.TileOrder.Value % (tileSetTexture.Width / t.Width);
+                    var tileRow = t.TileOrder.Value / (tileSetTexture.Width / t.Width);
                     var tileArea = new Rectangle(tileCol * t.Width, tileRow * t.Height, t.Width, t.Height);
 
-                    t.Texture = ImageUtils.Crop(tileSetTexture, tileArea);
+                    // set tile area to crop from tileset
+                    layer.Data[t.Row, t.Column].TileArea = tileArea;
                 }                
             }
-
-            // apagar depois
-            // set row, column and color of each tile
-            //foreach (var t in map.Tiles.Values)
-            //{
-            //    var tileSet = map.TileSets[t.Tileset];
-            //    if (tileSet == null)
-            //        continue;
-                 
-            //    t.TileCol = t.TileOrder % (tileSet.Width / t.Width);
-            //    t.TileRow = t.TileOrder / (tileSet.Width / t.Width);
-            //    t.Color = Color.White;
-                
-            //}
 
             return map; 
         }
