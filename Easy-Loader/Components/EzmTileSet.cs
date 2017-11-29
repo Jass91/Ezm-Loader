@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace EzmLoader.Components
+namespace EzmLoader
 {
     //[JsonObject(MemberSerialization. OptIn)]
     public class EzmTileSet

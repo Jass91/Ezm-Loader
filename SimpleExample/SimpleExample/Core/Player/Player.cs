@@ -9,11 +9,16 @@ namespace SimpleExample.Core.Player
 {
     public class Player
     {
+
+        public int Width { get; set; }
+
+        public int Height { get; set; }
+
         public Vector2 Position { get; private set; }
 
-        public Dictionary<string, Texture2D> Textures;
+        public float Velocity { get; set; } = 1f;
 
-        private float _velocity = 1.5f;
+        private Dictionary<string, Texture2D> _textures;
 
         private int _currentFrame;
 
@@ -21,20 +26,23 @@ namespace SimpleExample.Core.Player
 
         private bool _isMoving = false;
 
-        private Direction _dir = Direction.RIGHT;
-
+        public Direction Direction { get; set; }
+ 
         public Player(int index)
-        {
+        { 
             _index = index;
             _currentFrame = 2;
             _isMoving = false;
 
-            Position = new Vector2(32, 32);
+            Width = 32;
+            Height = 32;
+            Direction = Direction.RIGHT;
+            Position = new Vector2(3 * 32, 1 * 32);
         }
         public void Draw(SpriteBatch spriteBatch)
         {
-            var textureKey = _dir.ToString() + _currentFrame;
-            var texture = Textures[textureKey];
+            var textureKey = Direction.ToString() + _currentFrame;
+            var texture = _textures[textureKey];
             spriteBatch.Begin();
             spriteBatch.Draw(texture, Position, Color.White);            
             spriteBatch.End();
@@ -69,38 +77,36 @@ namespace SimpleExample.Core.Player
                 }
             }
 
-            Textures = textures;
+            _textures = textures;
         }
 
         public void MoveTo(Vector2 nextPosition)
         {
-            Position = nextPosition;
-            _isMoving = true;
+            var canMove = Keyboard.GetState().GetPressedKeys().Length > 0;
+            if(canMove)
+            {
+                Position = nextPosition;
+                _isMoving = true;
+            }
         }
 
         public Vector2 GetNextPostion()
         {
-            Vector2 nextPos = Position;
-          
-            if (Keyboard.GetState(PlayerIndex.One).IsKeyDown(Keys.W))
+            Vector2 nextPos = new Vector2();
+            switch (Direction)
             {
-                _dir = Direction.UP;
-                nextPos = new Vector2(Position.X, Position.Y - _velocity);
-            }
-            else if (Keyboard.GetState(PlayerIndex.One).IsKeyDown(Keys.A))
-            {
-                _dir = Direction.LEFT;
-                nextPos = new Vector2(Position.X - _velocity, Position.Y);
-            }
-            else if (Keyboard.GetState(PlayerIndex.One).IsKeyDown(Keys.S))
-            {
-                _dir = Direction.DOWN;
-                nextPos = new Vector2(Position.X, Position.Y + _velocity);
-            }
-            else if (Keyboard.GetState(PlayerIndex.One).IsKeyDown(Keys.D))
-            {
-                _dir = Direction.RIGHT;
-                nextPos = new Vector2(Position.X + _velocity, Position.Y);
+                case Direction.UP:
+                    nextPos = new Vector2(Position.X, Position.Y - Velocity);
+                    break;
+                case Direction.LEFT:
+                    nextPos = new Vector2(Position.X - Velocity, Position.Y);
+                    break;
+                case Direction.DOWN:
+                    nextPos = new Vector2(Position.X, Position.Y + Velocity);
+                    break;
+                case Direction.RIGHT:
+                    nextPos = new Vector2(Position.X + Velocity, Position.Y);
+                    break;
             }
 
             return nextPos;

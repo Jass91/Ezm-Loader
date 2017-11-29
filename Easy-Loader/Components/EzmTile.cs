@@ -5,7 +5,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace EzmLoader.Components
+namespace EzmLoader
 {
     public class EzmTile
     {
@@ -24,19 +24,11 @@ namespace EzmLoader.Components
         [JsonProperty("tileset")]
         public int? Tileset { get; set; }
 
-        // talvez remover -------------
-        [JsonIgnore]
-        public int TileRow { get; set; }
-
-        [JsonIgnore]
-        public int TileCol { get; set; }
-        // ------------------------------
-
         [JsonIgnore]
         public Dictionary<string, EzmCustomProperty> Properties { get; set; }
 
         [JsonIgnore]
-        public Color Color { get; set; } = Color.White;
+        public Color Color { get; set; }
 
         [JsonIgnore]
         public int Column { get; set; }
@@ -45,17 +37,20 @@ namespace EzmLoader.Components
         public int Row { get; set; }
 
         [JsonIgnore]
-        public Rectangle TileArea { get; set; }
+        public Rectangle TileSetArea { get; set; }
 
         [JsonConstructor]
         private EzmTile(ICollection<EzmCustomProperty> properties)
         {
             this.Properties = properties.ToDictionary(p => p.Name , p  => p);
+            this.Color = Color.White;
         }
         
-        public EzmTile()
+        public EzmTile() { } 
+        
+        public bool IsEmpty()
         {
-
-        }      
+            return ID < 0;
+        }     
     }
 }

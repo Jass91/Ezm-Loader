@@ -1,9 +1,8 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-using Shared.Enums;
 using SimpleExample.Core.Player;
-using SimpleExample.Core.Map;
+using EzmLoader;
 
 namespace SimpleExample
 {
@@ -15,7 +14,7 @@ namespace SimpleExample
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
         Player player;
-        Map map;
+        EzmMap map;
 
         int fps = 15;
         int increase = 0;
@@ -39,7 +38,14 @@ namespace SimpleExample
             spriteBatch = new SpriteBatch(GraphicsDevice);
 
             // TODO: Add your initialization logic here
-            map = new Map(Content, $@"{Content.RootDirectory}\Levels\map.ezm", "TileSets");
+            map = new EzmMap(
+                Content,
+                GraphicsDevice,
+                "TileSets",
+                $@"{Content.RootDirectory}\Levels\map.ezm", 
+                true
+            );
+
             player = new Player(0);
 
             setResolution();
@@ -85,9 +91,10 @@ namespace SimpleExample
             // Allows the game to exit
             if (Keyboard.GetState(PlayerIndex.One).IsKeyDown(Keys.Escape))
                 this.Exit();
-
+            
+            UpdatePlayerDirection();
             var nexPosition = player.GetNextPostion();
-            if (!PlayerWillCollide(nexPosition))
+            if (!PlayerWillCollide(new Rectangle((int)nexPosition.X, (int)nexPosition.Y, player.Width, player.Height)))
             {
                 player.MoveTo(nexPosition);
             }
@@ -110,7 +117,10 @@ namespace SimpleExample
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
-            // TODO: Add your drawing code here
+            // Somewhere in your LoadContent() method:
+            var pixel = new Texture2D(GraphicsDevice, 1, 1, false, SurfaceFormat.Color);
+            pixel.SetData(new[] { Color.White }); // so that we can draw whatever color we want on top of it
+
             map.Draw(spriteBatch);
 
             player.Draw(spriteBatch);
@@ -118,18 +128,46 @@ namespace SimpleExample
             base.Draw(gameTime);
         }
 
-        protected bool PlayerWillCollide(Vector2 futurePosition)
+        protected bool PlayerWillCollide(Rectangle playerArea)
         {
-            var t = map.GetTileAt(futurePosition);
-            if (t == null)
-                return false;
+            foreach(var l in map.Layers.Values)
+            {
+                for(int i = 0; i < l.Width; i++)
+                {
+                    for (int j = 0; j < l.Height; j++)
+                    {
+                        var tile = l.Data[i, j];
 
-            var tilePos = new Rectangle(t.Column * t.Width, t.Row * t.Height, t.Width, t.Height);
-            var rect = new Rectangle((int)futurePosition.X, (int)futurePosition.Y, t.Width, t.Height);
-            var collided = tilePos.Intersects(rect);
-            var collidable = t.Properties.ContainsKey("collidable") ? bool.Parse(t.Properties["collidable"].Value) : false;
+                        var tileRect = new Rectangle(tile.Column * tile.Width, tile.Row * tile.Height, tile.Width, tile.Height);
+                        var collidable = tile.Properties.ContainsKey("collidable") ? bool.Parse(tile.Properties["collidable"].Value) : false;
 
-            return collidable && collidable;
+                        if (tileRect.Intersects(playerArea) && collidable)
+                            return true;
+                    }
+                }
+            }
+
+            return false;
+        }
+
+        protected void UpdatePlayerDirection()
+        {
+            if (Keyboard.GetState(PlayerIndex.One).IsKeyDown(Keys.W))
+            {
+                player.Direction = Shared.Enums.Direction.UP;
+            }
+            else if (Keyboard.GetState(PlayerIndex.One).IsKeyDown(Keys.A))
+            {
+                player.Direction = Shared.Enums.Direction.LEFT;
+            }
+            else if (Keyboard.GetState(PlayerIndex.One).IsKeyDown(Keys.S))
+            {
+                player.Direction = Shared.Enums.Direction.DOWN;
+            }
+            else if (Keyboard.GetState(PlayerIndex.One).IsKeyDown(Keys.D))
+            {
+                player.Direction = Shared.Enums.Direction.RIGHT;
+            }
         }
     }
 }
