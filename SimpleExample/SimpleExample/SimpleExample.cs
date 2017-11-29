@@ -46,7 +46,7 @@ namespace SimpleExample
                 true
             );
 
-            player = new Player(0);
+            player = new Player(0, GraphicsDevice);
 
             setResolution();
 
@@ -130,24 +130,36 @@ namespace SimpleExample
 
         protected bool PlayerWillCollide(Rectangle playerArea)
         {
-            foreach(var l in map.Layers.Values)
+            // this is more easy, we just need to use map.GetTilesIntersecsWith to get the tiles the intersects with playerArea
+            foreach (var tile in map.GetTilesIntersecsWith(playerArea))
             {
-                for(int i = 0; i < l.Width; i++)
-                {
-                    for (int j = 0; j < l.Height; j++)
-                    {
-                        var tile = l.Data[i, j];
+                var collidable = tile.Properties.ContainsKey("collidable") ? bool.Parse(tile.Properties["collidable"].Value) : false;
 
-                        var tileRect = new Rectangle(tile.Column * tile.Width, tile.Row * tile.Height, tile.Width, tile.Height);
-                        var collidable = tile.Properties.ContainsKey("collidable") ? bool.Parse(tile.Properties["collidable"].Value) : false;
-
-                        if (tileRect.Intersects(playerArea) && collidable)
-                            return true;
-                    }
-                }
+                if (collidable)
+                    return true;
             }
 
             return false;
+
+            // this is a bit faster, cuz you dont need to iterate over result again
+            //foreach(var l in map.Layers.Values)
+            //{
+            //    for(int i = 0; i < l.Width; i++)
+            //    {
+            //        for (int j = 0; j < l.Height; j++)
+            //        {
+            //            var tile = l.Data[i, j];
+
+            //            var tileRect = new Rectangle(tile.Column * tile.Width, tile.Row * tile.Height, tile.Width, tile.Height);
+            //            var collidable = tile.Properties.ContainsKey("collidable") ? bool.Parse(tile.Properties["collidable"].Value) : false;
+
+            //            if (tileRect.Intersects(playerArea) && collidable)
+            //                return true;
+            //        }
+            //    }
+            //}
+
+            //return false;
         }
 
         protected void UpdatePlayerDirection()

@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using Shared.Enums;
 using Microsoft.Xna.Framework.Input;
 using EzmLoader.Shared.Utils;
+using EzmLoader.Utils;
 
 namespace SimpleExample.Core.Player
 {
@@ -27,8 +28,10 @@ namespace SimpleExample.Core.Player
         private bool _isMoving = false;
 
         public Direction Direction { get; set; }
- 
-        public Player(int index)
+
+        private Texture2D pixel;
+
+        public Player(int index, GraphicsDevice graphicsDevice)
         { 
             _index = index;
             _currentFrame = 2;
@@ -38,13 +41,18 @@ namespace SimpleExample.Core.Player
             Height = 32;
             Direction = Direction.RIGHT;
             Position = new Vector2(3 * 32, 1 * 32);
+
+            pixel = new Texture2D(graphicsDevice, 1, 1, false, SurfaceFormat.Color);
+            pixel.SetData(new[] { Color.White });
         }
         public void Draw(SpriteBatch spriteBatch)
         {
             var textureKey = Direction.ToString() + _currentFrame;
             var texture = _textures[textureKey];
             spriteBatch.Begin();
-            spriteBatch.Draw(texture, Position, Color.White);            
+            spriteBatch.Draw(texture, Position, Color.White);
+
+            Utils.DrawTileBorder(spriteBatch, pixel, new Rectangle((int)Position.X, (int)Position.Y, Width, Height), 1, Color.Blue);        
             spriteBatch.End();
         }
 

@@ -116,26 +116,6 @@ namespace EzmLoader
             this.pixel.SetData(new[] { Color.White });
         }
 
-        private void DrawTileBorder(SpriteBatch spriteBatch, Texture2D pixel, Rectangle rectangleToDraw, int thicknessOfBorder, Color borderColor)
-        {
-            // Draw top line
-            spriteBatch.Draw(pixel, new Rectangle(rectangleToDraw.X, rectangleToDraw.Y, rectangleToDraw.Width, thicknessOfBorder), borderColor);
-
-            // Draw left line
-            spriteBatch.Draw(pixel, new Rectangle(rectangleToDraw.X, rectangleToDraw.Y, thicknessOfBorder, rectangleToDraw.Height), borderColor);
-
-            // Draw right line
-            spriteBatch.Draw(pixel, new Rectangle((rectangleToDraw.X + rectangleToDraw.Width - thicknessOfBorder),
-                                            rectangleToDraw.Y,
-                                            thicknessOfBorder,
-                                            rectangleToDraw.Height), borderColor);
-            // Draw bottom line
-            spriteBatch.Draw(pixel, new Rectangle(rectangleToDraw.X,
-                                            rectangleToDraw.Y + rectangleToDraw.Height - thicknessOfBorder,
-                                            rectangleToDraw.Width,
-                                            thicknessOfBorder), borderColor);
-        }
-
         public virtual void Draw(SpriteBatch spriteBatch)
         {
             if (Orientation == "orthogonal")
@@ -166,7 +146,7 @@ namespace EzmLoader
                         spriteBatch.Draw(tilesetTexture, targetLocation, tile.TileSetArea, tile.Color);
 
                         if(ShowTileBorder)
-                            DrawTileBorder(spriteBatch, pixel, targetLocation, 1, Color.Red);
+                            Utils.Utils.DrawTileBorder(spriteBatch, pixel, targetLocation, 1, Color.Red);
                     }
                 }
             }
@@ -181,30 +161,30 @@ namespace EzmLoader
 
         }
 
-        public EzmTile GetTileAt(Vector2 position)
+        public List<EzmTile> GetTilesIntersecsWith(Rectangle area)
         {
-            //var col = (int)(position.X / TileWidth);
-            //var row = (int)(position.Y / TileHeight);
-            //foreach(var layer in Layers.OrderByDescending(l => l.Value.Depth))
-            //{
-            //    try
-            //    {
-            //        var tile = layer.Value.Data[row, col];
-            //        if (tile.IsEmpty())
-            //            continue;
+            var intersectList = new List<EzmTile>();
+            foreach (var l in Layers.Values)
+            {
+                for (int i = 0; i < l.Width; i++)
+                {
+                    for (int j = 0; j < l.Height; j++)
+                    {
+                        var tile = l.Data[i, j];
+                        if (tile.IsEmpty())
+                            continue;
 
-            //        return tile;
-            //    }
-            //    catch (Exception)
-            //    {
-            //        return null;
-            //    }
-            //}
+                        var tileRect = new Rectangle(tile.Column * tile.Width, tile.Row * tile.Height, tile.Width, tile.Height);
+                        
+                        if (tileRect.Intersects(area))
+                        {
+                            intersectList.Add(tile);
+                        }
+                    }
+                }
+            }
 
-            //return null;
-
-            throw new NotImplementedException();
-
+            return intersectList;
         }
 
         public void Unload()
