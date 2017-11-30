@@ -29,9 +29,9 @@ namespace SimpleExample.Core.Player
 
         public Direction Direction { get; set; }
 
-        private Texture2D pixel;
+        private Texture2D pixel = null;
 
-        public Player(int index, GraphicsDevice graphicsDevice)
+        public Player(int index, GraphicsDevice graphicsDevice = null)
         { 
             _index = index;
             _currentFrame = 2;
@@ -42,8 +42,11 @@ namespace SimpleExample.Core.Player
             Direction = Direction.RIGHT;
             Position = new Vector2(3 * 32, 1 * 32);
 
-            pixel = new Texture2D(graphicsDevice, 1, 1, false, SurfaceFormat.Color);
-            pixel.SetData(new[] { Color.White });
+            if(graphicsDevice != null)
+            {
+                pixel = new Texture2D(graphicsDevice, 1, 1, false, SurfaceFormat.Color);
+                pixel.SetData(new[] { Color.White });
+            }
         }
         public void Draw(SpriteBatch spriteBatch)
         {
@@ -52,7 +55,9 @@ namespace SimpleExample.Core.Player
             spriteBatch.Begin();
             spriteBatch.Draw(texture, Position, Color.White);
 
-            Utils.DrawTileBorder(spriteBatch, pixel, new Rectangle((int)Position.X, (int)Position.Y, Width, Height), 1, Color.Blue);        
+            if(pixel != null)
+                Utils.DrawTileBorder(spriteBatch, pixel, new Rectangle((int)Position.X, (int)Position.Y, Width, Height), 1, Color.Blue);
+                    
             spriteBatch.End();
         }
 

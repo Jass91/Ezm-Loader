@@ -77,6 +77,9 @@ namespace EzmLoader
                 {
                     for(int j = 0; j < layer.Height; j++)
                     {
+                        if (layer.Data[i, j] == null)
+                            continue;
+
                         var layerTile = layer.Data[i, j];
                         var tile = Tiles.SingleOrDefault(t => t.ID == layerTile.ID);
                         layerTile.Height = TileHeight;
@@ -137,7 +140,7 @@ namespace EzmLoader
                         var tile = l.Data[i, j];
 
                         // empty tiles
-                        if (tile.IsEmpty())
+                        if (tile == null)
                             continue;
 
                         var tilesetTexture = TileSets[tile.Tileset.Value].Texture;
@@ -171,7 +174,7 @@ namespace EzmLoader
                     for (int j = 0; j < l.Height; j++)
                     {
                         var tile = l.Data[i, j];
-                        if (tile.IsEmpty())
+                        if (tile == null)
                             continue;
 
                         var tileRect = new Rectangle(tile.Column * tile.Width, tile.Row * tile.Height, tile.Width, tile.Height);

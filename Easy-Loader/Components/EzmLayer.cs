@@ -39,13 +39,20 @@ namespace EzmLoader
                 for (int j = 0; j < Height; j++)
                 {
                     var tileID = data[(j + i * width)];
-                    Data[i, j] = new EzmTile()
+                    if (tileID < 0)
                     {
-                        ID = tileID,
-                        Color = Color.White,
-                        Row = i,
-                        Column = j
-                    };
+                        Data[i, j] = null;
+                    }
+                    else
+                    {
+                        Data[i, j] = new EzmTile()
+                        {
+                            ID = tileID,
+                            Color = Color.White,
+                            Row = i,
+                            Column = j
+                        };
+                    }  
                 }
             }            
         }

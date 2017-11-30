@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Newtonsoft.Json;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -42,15 +43,17 @@ namespace EzmLoader
         [JsonConstructor]
         private EzmTile(ICollection<EzmCustomProperty> properties)
         {
-            this.Properties = properties.ToDictionary(p => p.Name , p  => p);
-            this.Color = Color.White;
+            try
+            {
+                this.Properties = properties.ToDictionary(p => p.Name, p => p);
+                this.Color = Color.White;
+            }catch(Exception e)
+            {
+
+            }
         }
         
         public EzmTile() { } 
-        
-        public bool IsEmpty()
-        {
-            return ID < 0;
-        }     
+          
     }
 }

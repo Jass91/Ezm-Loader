@@ -43,7 +43,7 @@ namespace EzmLoader
                 {
                     foreach (var t in layer.Data)
                     {
-                        if (t.IsEmpty())
+                        if (t == null)
                             continue;
 
                         var tileSetTexture = map.TileSets[t.Tileset.Value].Texture;
