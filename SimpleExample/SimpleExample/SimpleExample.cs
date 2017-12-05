@@ -99,6 +99,17 @@ namespace SimpleExample
                 player.MoveTo(nexPosition);
             }
 
+            if (PlayerWillEntryOnCavern(new Rectangle((int)nexPosition.X, (int)nexPosition.Y, player.Width, player.Height)))
+            {
+                map = new EzmMap(
+                Content,
+                GraphicsDevice,
+                "TileSets",
+                $@"{Content.RootDirectory}\Levels\cavern.ezm",
+                true
+            );
+            }
+
             increase += gameTime.ElapsedGameTime.Milliseconds;
             if (increase >= 1000 / fps)
             {
@@ -126,6 +137,18 @@ namespace SimpleExample
             player.Draw(spriteBatch);
 
             base.Draw(gameTime);
+        }
+
+        protected bool PlayerWillEntryOnCavern(Rectangle playerArea)
+        {
+            // this is more easy, we just need to use map.GetTilesIntersecsWith to get the tiles the intersects with playerArea
+            foreach (var tile in map.GetTilesIntersecsWith(playerArea))
+            {
+                if(tile.Properties.ContainsKey("cavern"))
+                    return true;
+            }
+
+            return false;
         }
 
         protected bool PlayerWillCollide(Rectangle playerArea)

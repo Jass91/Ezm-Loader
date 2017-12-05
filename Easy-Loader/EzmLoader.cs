@@ -43,8 +43,6 @@ namespace EzmLoader
                 {
                     foreach (var t in layer.Data)
                     {
-                        if (t == null)
-                            continue;
 
                         var tileSetTexture = map.TileSets[t.Tileset.Value].Texture;
                         if (tileSetTexture == null)
@@ -57,7 +55,7 @@ namespace EzmLoader
                         var tileArea = new Rectangle(tileCol * t.Width, tileRow * t.Height, t.Width, t.Height);
 
                         // set tile area to crop from tileset
-                        layer.Data[t.Row, t.Column].TileSetArea = tileArea;
+                        t.TileSetArea = tileArea;
                     }
                 }
             }

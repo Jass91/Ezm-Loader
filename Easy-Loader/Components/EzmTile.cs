@@ -43,14 +43,8 @@ namespace EzmLoader
         [JsonConstructor]
         private EzmTile(ICollection<EzmCustomProperty> properties)
         {
-            try
-            {
-                this.Properties = properties.ToDictionary(p => p.Name, p => p);
-                this.Color = Color.White;
-            }catch(Exception e)
-            {
-
-            }
+            this.Properties = properties.ToDictionary(p => p.Name, p => p);
+            this.Color = Color.White;
         }
         
         public EzmTile() { } 

@@ -40,7 +40,7 @@ namespace SimpleExample.Core.Player
             Width = 32;
             Height = 32;
             Direction = Direction.RIGHT;
-            Position = new Vector2(3 * 32, 1 * 32);
+            Position = new Vector2(1 * 32, 3 * 32);
 
             if(graphicsDevice != null)
             {

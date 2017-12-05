@@ -101,14 +101,123 @@
       "height": 32,
 			"properties": []
 		},
-		{
-      "id": 22,
-      "TileOrder": 22,
+    {
+      "id": 160,
+      "TileOrder": 160,
       "tileset": 1,
       "width": 32,
       "height": 32,
-      "properties": []
-		}
+      "properties": [
+        {
+          "name": "collidable",
+          "value": "true"
+        }
+      ]
+    },
+    {
+      "id": 161,
+      "TileOrder": 161,
+      "tileset": 1,
+      "width": 32,
+      "height": 32,
+      "properties": [
+        {
+          "name": "collidable",
+          "value": "true"
+        }
+      ]
+    },
+    {
+      "id": 162,
+      "TileOrder": 162,
+      "tileset": 1,
+      "width": 32,
+      "height": 32,
+      "properties": [
+        {
+          "name": "collidable",
+          "value": "true"
+        }
+      ]
+    },
+    {
+      "id": 168,
+      "TileOrder": 168,
+      "tileset": 1,
+      "width": 32,
+      "height": 32,
+      "properties": [
+        {
+          "name": "collidable",
+          "value": "true"
+        }
+      ]
+    },
+    {
+      "id": 169,
+      "TileOrder": 169,
+      "tileset": 1,
+      "width": 32,
+      "height": 32,
+      "properties": [
+        {
+          "name": "cavern",
+          "value": "true"
+        }
+      ]
+    },
+    {
+      "id": 170,
+      "TileOrder": 170,
+      "tileset": 1,
+      "width": 32,
+      "height": 32,
+      "properties": [
+        {
+          "name": "collidable",
+          "value": "true"
+        }
+      ]
+    },
+    {
+      "id": 176,
+      "TileOrder": 176,
+      "tileset": 1,
+      "width": 32,
+      "height": 32,
+      "properties": [
+        {
+          "name": "collidable",
+          "value": "true"
+        }
+      ]
+    },
+    {
+      "id": 177,
+      "TileOrder": 177,
+      "tileset": 1,
+      "width": 32,
+      "height": 32,
+      "properties": [
+        {
+          "name": "cavern",
+          "value": "true"
+        }
+      ]
+    },
+    {
+      "id": 178,
+      "TileOrder": 178,
+      "tileset": 1,
+      "width": 32,
+      "height": 32,
+      "properties": [
+        {
+          "name": "collidable",
+          "value": "true"
+        }
+      ]
+    }
 	],
 	"layers": [
     {
@@ -150,11 +259,11 @@
       "width": 5,
       "height": 5,
       "data": [
-        38,38,38,38,38,
-        38,-1,-1,-1,38,
-        38,-1,38,-1,38,
-        38,-1,-1,-1,38,
-		    38,38,38,38,38
+        38, 160, 161, 162, 38,
+        38, 168, 169, 170, 38,
+        38, 176, 177, 178, 38,
+        38, -1,  -1,  -1,  38,
+		    38, 38,  38,  38,  38
       ]
     }
 	]	

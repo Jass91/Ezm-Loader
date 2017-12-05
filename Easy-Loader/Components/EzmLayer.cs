@@ -23,7 +23,7 @@ namespace EzmLoader
         public int Height { get; set; }
 
         [JsonIgnore]
-        public EzmTile [,]Data { get; set; }
+        public List<EzmTile> Data { get; set; }
 
 
         [JsonConstructor]
@@ -33,26 +33,24 @@ namespace EzmLoader
             this.Height = height;
 
             // converts to EzamTile[,]
-            Data = new EzmTile[width, height];
+            Data = new List<EzmTile>(width * height);
             for(int i = 0; i < Width; i++)
             {
                 for (int j = 0; j < Height; j++)
                 {
                     var tileID = data[(j + i * width)];
-                    if (tileID < 0)
+                    if (tileID > 0)
                     {
-                        Data[i, j] = null;
-                    }
-                    else
-                    {
-                        Data[i, j] = new EzmTile()
+                        var t = new EzmTile()
                         {
                             ID = tileID,
                             Color = Color.White,
                             Row = i,
                             Column = j
                         };
-                    }  
+
+                        Data.Add(t);
+                    }                   
                 }
             }            
         }

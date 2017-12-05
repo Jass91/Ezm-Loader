@@ -73,22 +73,15 @@ namespace EzmLoader
                     throw new Exception($"Layer ({layer.Name}) must have width({layer.Width}) and height({layer.Height}) equals map with ({width}) and map height({height})");
                 }
 
-                for(int i = 0; i < layer.Width; i++)
+                foreach(var layerTile in layer.Data)
                 {
-                    for(int j = 0; j < layer.Height; j++)
-                    {
-                        if (layer.Data[i, j] == null)
-                            continue;
-
-                        var layerTile = layer.Data[i, j];
-                        var tile = Tiles.SingleOrDefault(t => t.ID == layerTile.ID);
-                        layerTile.Height = TileHeight;
-                        layerTile.Width = TileWidth;
-                        layerTile.TileOrder = tile != null ? tile.TileOrder : null;
-                        layerTile.Tileset = tile != null ? tile.Tileset : null;
-                        layerTile.Properties = tile != null ? tile.Properties : new Dictionary<string, EzmCustomProperty>();                     
-                    }
-                }
+                    var tile = Tiles.SingleOrDefault(t => t.ID == layerTile.ID);
+                    layerTile.Height = TileHeight;
+                    layerTile.Width = TileWidth;
+                    layerTile.TileOrder = tile != null ? tile.TileOrder : null;
+                    layerTile.Tileset = tile != null ? tile.Tileset : null;
+                    layerTile.Properties = tile != null ? tile.Properties : new Dictionary<string, EzmCustomProperty>();
+                }                
             }
         }
 
@@ -131,27 +124,18 @@ namespace EzmLoader
         {
 
             spriteBatch.Begin();
-            foreach (var l in Layers.Values.OrderBy(l => l.Depth))
+            foreach (var l in Layers.Values)
             {
-                for (int i = 0; i < l.Width; i++)
+                foreach(var tile in l.Data)
                 {
-                    for (int j = 0; j < l.Height; j++)
-                    {
-                        var tile = l.Data[i, j];
+                    var tilesetTexture = TileSets[tile.Tileset.Value].Texture;
+                    var targetLocation = new Rectangle((tile.Column * tile.Width) + (int)Origin.X, (tile.Row * tile.Height) + (int)Origin.Y, tile.Width, tile.Height);
 
-                        // empty tiles
-                        if (tile == null)
-                            continue;
+                    spriteBatch.Draw(tilesetTexture, targetLocation, tile.TileSetArea, tile.Color);
 
-                        var tilesetTexture = TileSets[tile.Tileset.Value].Texture;
-                        var targetLocation = new Rectangle((tile.Column * tile.Width) + (int)Origin.X, (tile.Row * tile.Height) + (int)Origin.Y, tile.Width, tile.Height);
-
-                        spriteBatch.Draw(tilesetTexture, targetLocation, tile.TileSetArea, tile.Color);
-
-                        if(ShowTileBorder)
-                            Utils.Utils.DrawTileBorder(spriteBatch, pixel, targetLocation, 1, Color.Red);
-                    }
-                }
+                    if (ShowTileBorder)
+                        Utils.Utils.DrawTileBorder(spriteBatch, pixel, targetLocation, 1, Color.Red);
+                }               
             }
 
             spriteBatch.End();
@@ -167,24 +151,16 @@ namespace EzmLoader
         public List<EzmTile> GetTilesIntersecsWith(Rectangle area)
         {
             var intersectList = new List<EzmTile>();
-            foreach (var l in Layers.Values)
+            foreach (var l in Layers.Values.OrderByDescending(layer => layer.Depth))
             {
-                for (int i = 0; i < l.Width; i++)
+                foreach(var tile in l.Data)
                 {
-                    for (int j = 0; j < l.Height; j++)
+                    var tileRect = new Rectangle(tile.Column * tile.Width, tile.Row * tile.Height, tile.Width, tile.Height);
+                    if (tileRect.Intersects(area))
                     {
-                        var tile = l.Data[i, j];
-                        if (tile == null)
-                            continue;
-
-                        var tileRect = new Rectangle(tile.Column * tile.Width, tile.Row * tile.Height, tile.Width, tile.Height);
-                        
-                        if (tileRect.Intersects(area))
-                        {
-                            intersectList.Add(tile);
-                        }
+                        intersectList.Add(tile);
                     }
-                }
+                }                
             }
 
             return intersectList;
